@@ -1,8 +1,18 @@
 # google-mcp
 
+[![Crates.io](https://img.shields.io/crates/v/gdrive-mcp-server.svg)](https://crates.io/crates/gdrive-mcp-server)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 A comprehensive Google MCP (Model Context Protocol) server written in Rust. Currently provides **41 tools**, resource templates, and prompts for full Google Drive access, with Gmail and other Google services planned.
 
 Supports both **stdio** and **Streamable HTTP** transports with multi-user OAuth.
+
+## Quick Start
+
+```bash
+cargo install gdrive-mcp-server
+gdrive-mcp-server --credentials-file client_secret.json
+```
 
 ## Features
 

@@ -8,7 +8,7 @@ repository.workspace = true
 homepage.workspace = true
 authors.workspace = true
 description = "Google Drive MCP server - core library with tools, resources, and prompts"
-keywords = ["mcp", "google-drive", "model-context-protocol"]
+keywords = ["mcp", "google-drive", "mcp-server", "google-api"]
 categories = ["api-bindings"]
 
 [dependencies]
