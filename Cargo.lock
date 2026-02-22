@@ -652,7 +652,7 @@ dependencies = [
 
 [[package]]
 name = "gdrive-mcp-core"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "axum",
  "base64",
@@ -681,7 +681,7 @@ dependencies = [
 
 [[package]]
 name = "gdrive-mcp-server"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "clap",
