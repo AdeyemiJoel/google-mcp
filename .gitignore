@@ -1,0 +1,10 @@
+/target
+*.swp
+*.swo
+.env
+client_secret*.json
+*-token.json
+service-account*.json
+*.pem
+*.key
+.DS_Store

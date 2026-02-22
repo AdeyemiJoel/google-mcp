@@ -1,0 +1,37 @@
+[package]
+name = "gdrive-mcp-core"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+description = "Google Drive MCP server - core library with tools, resources, and prompts"
+keywords = ["mcp", "google-drive", "model-context-protocol"]
+categories = ["api-bindings"]
+
+[dependencies]
+rmcp.workspace = true
+google-drive3.workspace = true
+yup-oauth2.workspace = true
+hyper.workspace = true
+hyper-util.workspace = true
+hyper-rustls.workspace = true
+http-body-util.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
+axum.workspace = true
+tower-http.workspace = true
+thiserror.workspace = true
+clap.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+schemars.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+reqwest.workspace = true
+base64.workspace = true
+mime.workspace = true
+uuid.workspace = true
+sha2.workspace = true

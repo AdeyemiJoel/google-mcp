@@ -1,0 +1,73 @@
+[workspace]
+resolver = "2"
+members = ["crates/gdrive-mcp-server", "crates/gdrive-mcp-core"]
+
+[workspace.package]
+edition = "2021"
+license = "MIT"
+rust-version = "1.80"
+repository = "https://github.com/cafercangundogdu/google-mcp"
+homepage = "https://github.com/cafercangundogdu/google-mcp"
+authors = ["Cafer Can Gundogdu <cafercangundogdu@gmail.com>"]
+
+[workspace.dependencies]
+# MCP SDK
+rmcp = { version = "0.16.0", features = [
+    "server",
+    "macros",
+    "transport-io",
+    "transport-streamable-http-server",
+    "schemars",
+] }
+
+# Google Drive API
+google-drive3 = "7.0"
+yup-oauth2 = "12.1.2"
+hyper = "1.8.1"
+hyper-util = { version = "0.1.20", features = [
+    "client-legacy",
+    "http1",
+    "http2",
+    "tokio",
+] }
+hyper-rustls = { version = "0.27.7", features = ["http2", "ring"] }
+http-body-util = "0.1.3"
+
+# Async runtime
+tokio = { version = "1.49.0", features = [
+    "macros",
+    "rt-multi-thread",
+    "io-std",
+    "signal",
+    "fs",
+] }
+tokio-util = { version = "0.7.18", features = ["codec"] }
+
+# Web framework (for HTTP transport)
+axum = { version = "0.8.8", features = ["macros"] }
+tower-http = { version = "0.6.8", features = ["cors"] }
+
+# Error handling
+thiserror = "2.0.18"
+anyhow = "1.0.102"
+
+# CLI
+clap = { version = "4.5.60", features = ["derive", "env"] }
+
+# Serialization
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
+schemars = "1.2.1"
+
+# Logging
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.22", features = ["env-filter", "fmt"] }
+
+# HTTP client (for OAuth token exchange)
+reqwest = { version = "0.13.2", features = ["json", "form"] }
+
+# Misc
+base64 = "0.22.1"
+mime = "0.3.17"
+uuid = { version = "1.21.0", features = ["v4"] }
+sha2 = "0.10.9"
